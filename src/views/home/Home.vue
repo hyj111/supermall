@@ -89,6 +89,7 @@ export default {
     
   },
   mounted(){
+    
     // 3.监听item中图片加载完成
     // const refresh = debounce(this.$refs.scroll.scroll.refresh,50)
     // this.$bus.$on('homeItemImgLoad',()=>{
@@ -122,7 +123,7 @@ export default {
       this.index = index;
        this.$refs.tabControl1.currentIndex = index
        this.$refs.tabControl2.currentIndex = index
-     
+      
      
     },
    

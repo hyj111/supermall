@@ -11,6 +11,7 @@
       <goods-list :goods="recommend" ref="recommend"></goods-list>
     </scroll>
     <detail-bottom-bar @addCart="addCart"></detail-bottom-bar>
+   
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
   </div>
 </template>
@@ -27,9 +28,11 @@ import DetailBottomBar from "./childComps/DetailBottomBar";
 import GoodsList from "components/content/goods/GoodsList.vue";
 import Scroll from "components/common/scroll/Scroll";
 
+
+
 import { debouce } from "common/debouce";
 import { backTopMixin } from "common/mixin";
-
+import {mapActions} from "vuex"
 import {
   getDetail,
   Goods,
@@ -42,6 +45,8 @@ export default {
   mixins: [backTopMixin],
   data() {
     return {
+      // message:"哈哈哈哈哈",
+      // show:false,
       iid: null,
       topImages: null,
       goods: null,
@@ -65,6 +70,7 @@ export default {
     DetailCommentInfo,
     DetailBottomBar,
     GoodsList,
+    // Toast
   },
   created() {
     // 保存传入的iid
@@ -118,6 +124,8 @@ export default {
     });
   },
   methods: {
+    // 映射vuex中的函数
+    // ...mapActions(['addCart']),
     imgLoad() {
       this.getThemeYopY();
     },
@@ -154,7 +162,16 @@ export default {
       product.iid = this.iid
       
       // 将商品添加到购物车里
-       this.$store.dispatch('addCart',product)
+       this.$store.dispatch('addCart',product).then(res=>{        
+        //  this.show = true
+        //  this.message = res
+        //  setTimeout(()=>{
+        //    this.show=false
+        //  },1500)
+        this.$toast.show(res)      
+       })
+
+     
       
     }
   },
