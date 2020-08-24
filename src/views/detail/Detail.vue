@@ -108,9 +108,9 @@ export default {
     this.getThemeYopY = debouce(() => {
       this.themTopYs = [];
       this.themTopYs.push(0);
-      this.themTopYs.push(this.$refs.param.$el.offsetTop - 44);
-      this.themTopYs.push(this.$refs.comment.$el.offsetTop - 44);
-      this.themTopYs.push(this.$refs.recommend.$el.offsetTop - 44);
+      this.themTopYs.push(this.$refs.param.$el.offsetTop );
+      this.themTopYs.push(this.$refs.comment.$el.offsetTop );
+      this.themTopYs.push(this.$refs.recommend.$el.offsetTop );
       this.$refs.scroll.scroll.refresh();
       
     }, 100);
@@ -120,6 +120,7 @@ export default {
     this.$bus.$on("detailitemImgLoad", () => {
       if (this.$refs.scroll != undefined) {
         this.imgLoad();
+        
       }
     });
   },
@@ -162,12 +163,7 @@ export default {
       product.iid = this.iid
       
       // 将商品添加到购物车里
-       this.$store.dispatch('addCart',product).then(res=>{        
-        //  this.show = true
-        //  this.message = res
-        //  setTimeout(()=>{
-        //    this.show=false
-        //  },1500)
+       this.$store.dispatch('addCart',product).then(res=>{ 
         this.$toast.show(res)      
        })
 
@@ -180,22 +176,26 @@ export default {
 
 <style scoped>
 #detail {
-  height: 100vh;
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  left: 0;
+  position: relative;
   z-index: 9;
   background-color: #fff;
+  height: 100vh;
 }
 .detail-nav {
   position: relative;
-  z-index: 10;
+  z-index: 9;
   background-color: #fff;
 }
 .content {
-  position: relative;
-  overflow: hidden;
-  height: calc(100% - 93px);
+  position: absolute;
+  top: 44px;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+}
+.back-top {
+  position: fixed;
+  right: 10px;
+  bottom: 65px;
 }
 </style>

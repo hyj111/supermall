@@ -1,138 +1,109 @@
 <template>
-
-    <div class="wrapper">
-       
-      <ul class="content">
-          <li>1</li>
-          <li>2</li>
-          <li>3</li>
-          <li>4</li>
-          <li>5</li>
-          <li>6</li>
-          <li>7</li>
-          <li>8</li>
-          <li>9</li>
-          <li>10</li>
-          <li>11</li>
-          <li>12</li>
-          <li>13</li>
-          <li>14</li>
-          <li>15</li>
-          <li>16</li>
-          <li>17</li>
-          <li>18</li>
-          <li>19</li>
-          <li>20</li>
-          <li>21</li>
-          <li>22</li>
-          <li>23</li>
-          <li>24</li>
-          <li>25</li>
-          <li>26</li>
-          <li>27</li>
-          <li>28</li>
-          <li>29</li>
-          <li>30</li>
-          <li>31</li>
-          <li>32</li>
-          <li>33</li>
-          <li>34</li>
-          <li>35</li>
-          <li>36</li>
-          <li>37</li>
-          <li>38</li>
-          <li>39</li>
-          <li>40</li>
-          <li>41</li>
-          <li>42</li>
-          <li>43</li>
-          <li>44</li>
-          <li>45</li>
-          <li>46</li>
-          <li>47</li>
-          <li>48</li>
-          <li>49</li>
-          <li>50</li>
-          <li>51</li>
-          <li>52</li>
-          <li>53</li>
-          <li>54</li>
-          <li>55</li>
-          <li>56</li>
-          <li>57</li>
-          <li>58</li>
-          <li>59</li>
-          <li>60</li>
-          <li>61</li>
-          <li>62</li>
-          <li>63</li>
-          <li>64</li>
-          <li>65</li>
-          <li>66</li>
-          <li>67</li>
-          <li>68</li>
-          <li>69</li>
-          <li>70</li>
-          <li>71</li>
-          <li>72</li>
-          <li>73</li>
-          <li>74</li>
-          <li>75</li>
-          <li>76</li>
-          <li>77</li>
-          <li>78</li>
-          <li>79</li>
-          <li>80</li>
-          <li>81</li>
-          <li>82</li>
-          <li>83</li>
-          <li>84</li>
-          <li>85</li>
-          <li>86</li>
-          <li>87</li>
-          <li>88</li>
-          <li>89</li>
-          <li>90</li>
-          <li>91</li>
-          <li>92</li>
-          <li>93</li>
-          <li>94</li>
-          <li>95</li>
-          <li>96</li>
-          <li>97</li>
-          <li>98</li>
-          <li>99</li>
-          <li>100</li>
-      </ul>
-    </div>
+  <div class="category">
+    <nav-bar class="profile-nav">
+      <span slot="center">分类</span>
+    </nav-bar>
+    <tab-menu @getmaitKey="getmaitKey"></tab-menu>
+    <scroll class="content-category" ref="scroll1">
+      <div class="box" v-for="item in contentList">
+        <img :src="item.image" alt />
+        <div>{{item.title}}</div>
+      </div>
+      <tab-control :titles="titles" @tabClick="tabClick"></tab-control>
+      <goods-list :goods="goods"></goods-list>
+    </scroll>
+  </div>
 </template>
 
 <script>
-  import BScroll from 'better-scroll'
-  export default {
-    name: "Category",
-    mounted(){
-      this.scroll = new BScroll('.wrapper',{
-        probeType:3,
-        pullUpLoad:true
-      })
-      this.scroll.on('scroll',(position)=>{
-        // console.log(position);
-      })
-      this.scroll.on('pullingUp',()=>{
-        console.log("上拉加载更多");
-        
-      })
+import TabControl from "components/content/tabControl/TabControl.vue";
+import { getSubcategory, getCategoryDetail } from "network/category.js";
+import NavBar from "components/common/navbar/NavBar.vue";
+import TabMenu from "./childComps/TabMenu";
+import Scroll from "components/common/scroll/Scroll";
+import GoodsList from "components/content/goods/GoodsList.vue";
+
+export default {
+  name: "Category",
+  data() {
+    return {
+      contentList: [],
+      titles: ["流行", "新款", "精选"],
+      currentType: ["pop", "new", "sell"],
+      index: 0,
+      goods: [],
+      miniWallke: null,
+    };
+  },
+  components: {
+    NavBar,
+    TabMenu,
+    Scroll,
+    TabControl,
+    GoodsList,
+  },
+  mounted() {
+    // 监听图片加载完成
+    this.$bus.$on("categoryImgLoad", () => {
+      if (this.$refs.scroll1 != undefined) {
+        this.$refs.scroll1.scroll.refresh()
+      }
+    });
+  },
+  methods: {
+    tabClick(index) {
+      this.index = index;
+      getCategoryDetail(this.miniWallke, this.currentType[this.index]).then(
+        (res) => {
+          this.goods = res;
+        }
+      );
     },
-    
-  }
+    getmaitKey(maitKey, miniWallke) {
+      getSubcategory(maitKey).then((res) => {
+        this.contentList = res.data.list;
+      });
+      this.miniWallke = miniWallke;
+      getCategoryDetail(this.miniWallke, this.currentType[this.index]).then(
+        (res) => {
+          this.goods = res;
+        }
+      );
+    },
+  },
+};
 </script>
 
 <style scoped>
-.wrapper {
-  height: 150px;
- 
-  background-color: red;
-  /* overflow-y: scroll; */
+.profile-nav {
+  background-color: #ff8198;
+  font-weight: 700;
+  color: #fff;
+}
+.content-category {
+  /* position: relative;
+  left: 100px;
+  margin-top: 20px;
+  width: calc(100% - 100px);
+  overflow: hidden;
+  height: calc(100vh - 44px - 49px); */
+  width: calc(100% - 100px);
+  position: absolute;
+  top: 55px;
+  bottom: 38px;
+  left: 100px;
+  right: 0;
+  overflow: hidden;
+}
+.box {
+  display: inline-block;
+  width: 33.3%;
+  height: 95px;
+  font-size: 12px;
+  text-align: center;
+}
+.box img {
+  width: 60px;
+  height: 60px;
 }
 </style>

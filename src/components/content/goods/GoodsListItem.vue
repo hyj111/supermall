@@ -21,7 +21,7 @@ export default {
   },
   computed:{
     showImage(){
-      return this.goodsItem.image || this.goodsItem.show.img
+      return this.goodsItem.image || this.goodsItem.img || this.goodsItem.show.img
     }
   },
   methods: {
@@ -32,8 +32,10 @@ export default {
     imgLoad(){
       if(this.$route.path.indexOf('/home')!=-1){
         this.$bus.$emit('homeItemImgLoad')
-      }else if(-1!=this.$route.path.indexOf('/detail')!=-1){
+      }else if(this.$route.path.indexOf('/detail')!=-1){
         this.$bus.$emit('detailitemImgLoad')
+      }else if(this.$route.path.indexOf('/category')!=-1){
+        this.$bus.$emit('categoryImgLoad')
       }
      
     }
